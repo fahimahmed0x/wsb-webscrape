@@ -34,7 +34,7 @@ data %>%
     labs(title = "Frequently Mentioned Tickers on WallStreetBets",
          subtitle = "WISH was the most commonly mentioned stock ticker",
          x = "Ticker",
-         y = "Count",
+         y = "Post Title Mentions",
          caption = "Source: r/WallStreetBets")
 ```
 
