@@ -1,0 +1,28 @@
+---
+title: "WSB Analysis"
+author: "Fahim Ahmed"
+date: "6/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r, include = FALSE}
+x <- read_csv("wsb.csv")
+```
+
+```{r, echo = FALSE}
+# Current problem: The webscraping script needs to convert all tickers to uppercase.
+data <- x %>%
+  select(Ticker) %>%
+  group_by(Ticker) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+data
+
+```
+
