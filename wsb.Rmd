@@ -14,15 +14,27 @@ library(tidyverse)
 x <- read_csv("wsb.csv")
 ```
 
-```{r, echo = FALSE}
-# Current problem: The webscraping script needs to convert all tickers to uppercase.
+```{r data, include = FALSE}
 data <- x %>%
-  select(Ticker) %>%
-  group_by(Ticker) %>%
+  select(ticker) %>%
+  group_by(ticker) %>%
   summarize(count = n()) %>%
-  arrange(desc(count))
+  arrange(desc(count)) %>%
+  slice(1:10) %>%
+  mutate(ticker = as.factor(ticker))
 
-data
+```
 
+```{r plot, echo = FALSE}
+data %>%
+  ggplot(mapping = aes(fct_reorder(ticker, count), count)) +
+    geom_col(fill = "lightblue") +
+    geom_text(aes(label = count), position = position_dodge(width = 0.9), vjust = -0.25) +
+    theme_classic() +
+    labs(title = "Frequently Mentioned Tickers on WallStreetBets",
+         subtitle = "WISH was the most commonly mentioned stock ticker",
+         x = "Ticker",
+         y = "Count",
+         caption = "Source: r/WallStreetBets")
 ```
 
