@@ -50,6 +50,6 @@ for ticker in tickersUpper:
 #convert lists into CSV file
 #The current implementation cleans the tickers before putting it into a dataframe, which causes an issue when combining it with the dates and titles lists due to their different lengths.
 #dict = {"Ticker": tickersClean, "Date": dates, "Title": titles} 
-dict = {"Ticker": tickersClean}
+dict = {"ticker": tickersClean}
 df = pd.DataFrame(dict)
 df.to_csv("wsb.csv")
