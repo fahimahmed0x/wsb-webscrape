@@ -28,6 +28,6 @@ for submission in submissions:
         urls.append(submission.url)
 
 #convert lists into CSV file
-dict = {"Ticker Symbol": tickers, "Date": dates, "Title": titles}
+dict = {"Ticker": tickers, "Date": dates, "Title": titles}
 df = pd.DataFrame(dict)
 df.to_csv("wsb.csv")
