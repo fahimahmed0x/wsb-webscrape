@@ -5,7 +5,11 @@ import re
 
 api = PushshiftAPI()
 
-start_epoch = int(dt.datetime(2021, 6, 25).timestamp())
+year = int(input("Enter a year (ex. 2021): "))
+month = int(input("Enter a month (ex. 6): "))
+day = int(input("Enter a day (ex. 28): "))
+
+start_epoch = int(dt.datetime(year, month, day).timestamp())
 
 submissions = api.search_submissions(after = start_epoch,
                                      subreddit = "wallstreetbets",
