@@ -1,6 +1,7 @@
 from psaw import PushshiftAPI
 import datetime as dt
 import pandas as pd
+import numpy as np
 import re
 
 api = PushshiftAPI()
@@ -28,7 +29,7 @@ for submission in submissions:
     #append to list if there is a cashtag
     if len(cashtags) > 0:
         tickers.append(cashtags)
-        dates.append(submission.created_utc)
+        dates.append(submission.created_utc) #unix timestamp
         titles.append(submission.title)
         urls.append(submission.url)
 
@@ -46,21 +47,16 @@ for tickerList in tickers:
         datesUpper.append(dates[i])
         titlesUpper.append(titles[i])
         urlsUpper.append(urls[i])
-""" 
-#clean tickers
-tickersClean = []
-regex = re.compile('[^a-zA-Z]')
-#clean each ticker
-for ticker in tickersUpper:
-    clean = regex.sub('', ticker)
-    #If there is still text after the ticker (as tickers have a max length of 4), include only the ticker.
-    if len(clean) > 4:
-        clean = clean[:4]
-    #append only if the ticker is not an empty string
-    if len(clean) != 0:
-        tickersClean.append(clean) """
 
-#convert lists into CSV file
-dict = {"ticker": tickersUpper, "dates": datesUpper, "title": titlesUpper, "url": urlsUpper}
+#convert lists into dataframe
+dict = {"ticker": tickersUpper, "date": datesUpper, "title": titlesUpper, "url": urlsUpper}
 df = pd.DataFrame(dict)
+
+#clean tickers in dataframe
+df["ticker"].replace('[^a-zA-Z]', '', regex = True, inplace = True) #remove anything that's not a letter
+df["ticker"] = df["ticker"].str[:4] #tickers have a max length of 4 strings
+df["ticker"] = df["ticker"].str.upper() #capitalize tickers
+df["ticker"].replace('', np.nan, inplace = True) #convert empty strings into NaN...
+df.dropna(subset=["ticker"], inplace=True) #... and drop them
+
 df.to_csv("wsb.csv")
