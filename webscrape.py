@@ -32,12 +32,21 @@ for submission in submissions:
         titles.append(submission.title)
         urls.append(submission.url)
 
-#convert tickers to all uppercase
+
+#convert tickers to all uppercase, and do the same with the other lists to keep the data in similar structures 
 tickersUpper = []
+datesUpper = []
+titlesUpper = []
+urlsUpper = []
 for tickerList in tickers:
+    i = int(tickers.index(tickerList))
     for ticker in tickerList:
         tickersUpper.append(ticker.upper())
-
+        #append the dates, titles, and url, for each of the tickers mentioned in the post title.
+        datesUpper.append(dates[i])
+        titlesUpper.append(titles[i])
+        urlsUpper.append(urls[i])
+""" 
 #clean tickers
 tickersClean = []
 regex = re.compile('[^a-zA-Z]')
@@ -49,11 +58,9 @@ for ticker in tickersUpper:
         clean = clean[:4]
     #append only if the ticker is not an empty string
     if len(clean) != 0:
-        tickersClean.append(clean)
+        tickersClean.append(clean) """
 
 #convert lists into CSV file
-#The current implementation cleans the tickers before putting it into a dataframe, which causes an issue when combining it with the dates and titles lists due to their different lengths.
-#dict = {"Ticker": tickersClean, "Date": dates, "Title": titles} 
-dict = {"ticker": tickersClean}
+dict = {"ticker": tickersUpper, "dates": datesUpper, "title": titlesUpper, "url": urlsUpper}
 df = pd.DataFrame(dict)
 df.to_csv("wsb.csv")
