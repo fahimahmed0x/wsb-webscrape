@@ -6,11 +6,8 @@ import re
 
 api = PushshiftAPI()
 
-year = int(input("Enter a year (ex. 2021): "))
-month = int(input("Enter a month (ex. 6): "))
-day = int(input("Enter a day (ex. 28): "))
-
-start_epoch = int(dt.datetime(year, month, day).timestamp())
+now = dt.datetime.now()
+start_epoch = int(dt.datetime(now.year, now.month, now.day).timestamp())
 
 submissions = api.search_submissions(after = start_epoch,
                                      subreddit = "wallstreetbets",
@@ -21,6 +18,7 @@ dates = []
 titles = []
 urls = []
 
+#put information scraped from each post into a list
 for submission in submissions:
     words = submission.title.split()
     #look for any word that starts with a $, and does not contain any digits.
@@ -33,17 +31,16 @@ for submission in submissions:
         titles.append(submission.title)
         urls.append(submission.url)
 
-
-#convert tickers to all uppercase, and do the same with the other lists to keep the data in similar structures 
 tickersUpper = []
 datesUpper = []
 titlesUpper = []
 urlsUpper = []
+#convert tickers to all uppercase, and do the same with the other lists to keep the data in similar structures 
 for tickerList in tickers:
     i = int(tickers.index(tickerList))
     for ticker in tickerList:
         tickersUpper.append(ticker.upper())
-        #append the dates, titles, and url, for each of the tickers mentioned in the post title.
+        #some post titles have two tickers, so appen. So append the dates, titles, and url, for each of the tickers mentioned in the post title.
         datesUpper.append(dates[i])
         titlesUpper.append(titles[i])
         urlsUpper.append(urls[i])
@@ -57,6 +54,6 @@ df["ticker"].replace('[^a-zA-Z]', '', regex = True, inplace = True) #remove anyt
 df["ticker"] = df["ticker"].str[:4] #tickers have a max length of 4 strings
 df["ticker"] = df["ticker"].str.upper() #capitalize tickers
 df["ticker"].replace('', np.nan, inplace = True) #convert empty strings into NaN...
-df.dropna(subset=["ticker"], inplace=True) #... and drop them
+df.dropna(subset = ["ticker"], inplace = True) #... and drop them
 
 df.to_csv("wsb.csv")
