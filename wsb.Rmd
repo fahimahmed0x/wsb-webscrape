@@ -8,42 +8,12 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(knitr)
 ```
 
-```{r, include = FALSE}
-x <- read_csv("wsb.csv")
-```
-
-```{r data, include = FALSE}
-data <- x %>%
-  select(ticker) %>%
-  group_by(ticker) %>%
-  summarize(count = n()) %>%
-  arrange(desc(count)) %>%
-  slice(1:10) %>%
-  mutate(ticker = as.factor(ticker))
-```
-
-```{r strings, include = FALSE}
-#get current date as string
-date <- toString(Sys.Date())
-
-#get most mentioned stock as a string
-most_mentioned <- data %>%
-  slice(1)
-ticker <- toString(most_mentioned$ticker)
-```
-
-```{r plot, echo = FALSE}
-data %>%
-  ggplot(mapping = aes(fct_reorder(ticker, count), count)) +
-    geom_col(fill = "lightblue") +
-    geom_text(aes(label = count), position = position_dodge(width = 0.9), vjust = -0.25) +
-    theme_classic() +
-    labs(title = "Frequently Mentioned Tickers on WallStreetBets",
-         subtitle = paste(ticker, "was the most commonly mentioned stock ticker on", date),
-         x = "Ticker",
-         y = "Post Title Mentions",
-         caption = "Source: r/WallStreetBets")
+```{r ticker-plot, echo = FALSE}
+ticker_plot <- read_rds("ticker-plot.rds")
+ggsave("ticker-plot.png", plot = ticker_plot)
+include_graphics("ticker-plot.png")
 ```
 
